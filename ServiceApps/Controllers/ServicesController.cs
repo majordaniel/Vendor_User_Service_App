@@ -6,6 +6,7 @@ using Core_3._1.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PassionProject.Models;
 using SLE_System.Models;
@@ -50,7 +51,8 @@ namespace Core_3._1.Controllers
             var Id = applicationUser.Id;
 
             string userEmail = applicationUser?.Email; // will give the user's Email
-            var serv = await _context.Services.ToListAsync();
+            var serv = await _context.Services
+                .Include(X=>X.Vendors).ToListAsync();
 
             return View(serv);
         }
@@ -59,6 +61,11 @@ namespace Core_3._1.Controllers
         {
             ViewBag.PageName = id == null ? "Create Service" : "Edit Service";
             ViewBag.IsEdit = id == null ? false : true;
+
+
+            ViewData["VendorId"] = new SelectList(_context.Vendors, "Id", "VendorName");
+      
+
             if (id == null)
             {
                 return View();
@@ -76,13 +83,13 @@ namespace Core_3._1.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddOrEdit(int serviceId, 
+        public async Task<IActionResult> AddOrEdit(int id, 
             [Bind("Id,VendorId,ServiceName,Fee")]
         Services serviceData)
         {
             bool IsVendorExist = false;
 
-            Services servi = await _context.Services.FindAsync(serviceId);
+            Services servi = await _context.Services.FindAsync(id);
 
             if (servi != null)
             {
