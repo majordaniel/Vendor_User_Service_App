@@ -8,8 +8,8 @@ namespace PassionProject.Models
 {
     public partial class Vendors : BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
+        //[Key]
+        //public int Id { get; set; }
 
         public string VendorName { get; set; }
 

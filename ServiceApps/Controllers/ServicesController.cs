@@ -12,7 +12,7 @@ using SLE_System.Models;
 
 namespace Core_3._1.Controllers
 {
-    public class VendorController : Controller
+    public class ServicesController : Controller
     {
 
 
@@ -20,7 +20,7 @@ namespace Core_3._1.Controllers
         private readonly SignInManager<AppUsers> _signInManager;
         private readonly AppDBContext _context;
 
-        public VendorController(AppDBContext context,UserManager<AppUsers> userManager,
+        public ServicesController(AppDBContext context,UserManager<AppUsers> userManager,
                               SignInManager<AppUsers> signInManager)
         {
             _userManager = userManager;
@@ -50,14 +50,14 @@ namespace Core_3._1.Controllers
             var Id = applicationUser.Id;
 
             string userEmail = applicationUser?.Email; // will give the user's Email
-            var vendors = await _context.Vendors.ToListAsync();
+            var serv = await _context.Services.ToListAsync();
 
-            return View(vendors);
+            return View(serv);
         }
 
         public async Task<IActionResult> AddOrEdit(int? id)
         {
-            ViewBag.PageName = id == null ? "Create Vendor" : "Edit Vendor";
+            ViewBag.PageName = id == null ? "Create Service" : "Edit Service";
             ViewBag.IsEdit = id == null ? false : true;
             if (id == null)
             {
@@ -65,51 +65,51 @@ namespace Core_3._1.Controllers
             }
             else
             {
-                var vendo = await _context.Vendors.FindAsync(id);
+                var service = await _context.Services.FindAsync(id);
 
-                if (vendo == null)
+                if (service == null)
                 {
                     return NotFound();
                 }
-                return View(vendo);
+                return View(service);
             }
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddOrEdit(int id, 
-            [Bind("Id,VendorName,Emailaddress,VendorDescription")]
-        Vendors vendorData)
+        public async Task<IActionResult> AddOrEdit(int serviceId, 
+            [Bind("Id,VendorId,ServiceName,Fee")]
+        Services serviceData)
         {
             bool IsVendorExist = false;
 
-            Vendors vend = await _context.Vendors.FindAsync(id);
+            Services servi = await _context.Services.FindAsync(serviceId);
 
-            if (vend != null)
+            if (servi != null)
             {
                 IsVendorExist = true;
             }
             else
             {
-                vend = new Vendors();
+                servi = new Services();
             }
 
-            //if (ModelState.IsValid)
-            //{
+            if (ModelState.IsValid)
+            {
                 try
                 {
-                    vend.CreatedAt = DateTime.Now;
-                    vend.Emailaddress = vendorData.Emailaddress;
-                    vend.VendorDescription = vendorData.VendorDescription;
-                    vend.VendorName = vendorData.VendorName;
+                    servi.CreatedAt = DateTime.Now;
+                    servi.VendorId = serviceData.VendorId;
+                    servi.ServiceName = serviceData.ServiceName;
+                    servi.Fee = serviceData.Fee;
                 
 
                     if (IsVendorExist)
                     {
-                        _context.Update(vend);
+                        _context.Update(servi);
                     }
                     else
                     {
-                        _context.Add(vend);
+                        _context.Add(servi);
                     }
                     await _context.SaveChangesAsync();
                 }
@@ -118,50 +118,50 @@ namespace Core_3._1.Controllers
                     throw;
                 }
                 return RedirectToAction(nameof(Index));
-            //}
-            //return View(vendorData);
+            }
+            return View(serviceData);
         }
 
 
-        public async Task<IActionResult> Details(int? vendorId)
+        public async Task<IActionResult> Details(int? serviceId)
         {
-            if (vendorId == null)
+            if (serviceId == null)
             {
                 return NotFound();
             }
-            var vend = await _context.Vendors.FirstOrDefaultAsync(m => m.Id == vendorId);
-            if (vend == null)
+            var serv = await _context.Services.FirstOrDefaultAsync(m => m.Id == serviceId);
+            if (serv == null)
             {
                 return NotFound();
             }
-            return View(vend);
+            return View(serv);
 
         }
 
         // GET: 
-        public async Task<IActionResult> Delete(int? vendorId)
+        public async Task<IActionResult> Delete(int? serviceId)
         {
-            if (vendorId == null)
+            if (serviceId == null)
             {
                 return NotFound();
             }
-            var vend = await _context.Vendors.FirstOrDefaultAsync(m => m.Id == vendorId);
+            var serv = await _context.Services.FirstOrDefaultAsync(m => m.Id == serviceId);
 
-            if (vend == null)
+            if (serv == null)
             {
                 return NotFound();
             }
 
-            return View(vend);
+            return View(serv);
         }
 
         // POST:
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int vendorId)
+        public async Task<IActionResult> Delete(int serviceId)
         {
-            var vend = await _context.Vendors.FindAsync(vendorId);
-            _context.Vendors.Remove(vend);
+            var servv = await _context.Services.FindAsync(serviceId);
+            _context.Services.Remove(servv);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));

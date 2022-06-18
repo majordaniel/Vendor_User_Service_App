@@ -9,8 +9,8 @@ namespace PassionProject.Models
 {
     public class AppUsers : IdentityUser
     {
-        [Key]
-        public Guid Id { get; set; }
+        //[Key]
+        //public Guid Id { get; set; }
 
 
         public DateTime? CreatedAt { get; set; }
