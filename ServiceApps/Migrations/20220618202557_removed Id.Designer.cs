@@ -4,14 +4,16 @@ using Core_3._1.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Core_3._1.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220618202557_removed Id")]
+    partial class removedId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,12 +237,14 @@ namespace Core_3._1.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("VendorId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.HasIndex("VendorId");
 
@@ -366,6 +370,10 @@ namespace Core_3._1.Migrations
 
             modelBuilder.Entity("PassionProject.Models.Bookings", b =>
                 {
+                    b.HasOne("PassionProject.Models.AppUsers", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.HasOne("PassionProject.Models.Vendors", "Vendors")
                         .WithMany()
                         .HasForeignKey("VendorId")

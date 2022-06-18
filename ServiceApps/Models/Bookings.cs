@@ -14,9 +14,9 @@ namespace PassionProject.Models
         //public int Id { get; set; }
 
         //[ForeignKey("AppUsers")]
-        //public Guid UserId { get; set; }
+        public string UserId { get; set; }
 
-        public virtual AppUsers User { get; set; }
+        //public virtual AppUsers User { get; set; }
 
         [ForeignKey("Vendors")]
         public int VendorId { get; set; }
